@@ -3,8 +3,10 @@ import { NextRequest, NextResponse } from 'next/server';
 const LAST_FM_API_KEY = process.env.LAST_FM_API_KEY;
 const LAST_FM_USERNAME = process.env.LAST_FM_USERNAME;
 
+export const revalidate = 0; // Add this line
+
 export const GET = async (req: NextRequest) => {
-    // Get the 'period' query parameter
+    // The rest of your code remains the same
     const { searchParams } = new URL(req.url);
     const period = searchParams.get('period');
 
@@ -15,14 +17,16 @@ export const GET = async (req: NextRequest) => {
     try {
         // Fetch top albums
         const topAlbumsResponse = await fetch(
-            `http://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=${LAST_FM_USERNAME}&api_key=${LAST_FM_API_KEY}&format=json&period=${period}`
+            `http://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=${LAST_FM_USERNAME}&api_key=${LAST_FM_API_KEY}&format=json&period=${period}`,
+            { cache: 'no-store' } // Add this option
         );
         const topAlbumsData = await topAlbumsResponse.json();
         const topAlbums = topAlbumsData.topalbums.album.slice(0, 10);
 
         // Fetch recent tracks
         const recentTracksResponse = await fetch(
-            `http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${LAST_FM_USERNAME}&api_key=${LAST_FM_API_KEY}&format=json&limit=10`
+            `http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${LAST_FM_USERNAME}&api_key=${LAST_FM_API_KEY}&format=json&limit=10`,
+            { cache: 'no-store' } // Add this option
         );
         const recentTracksData = await recentTracksResponse.json();
         const recentTracks = recentTracksData.recenttracks.track;
