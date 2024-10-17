@@ -1,6 +1,4 @@
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Fephraimduncan%2Fduncan.land)
-
-# duncan.land
+# zac.ong
 
 -   **Framework**: [Next.js](https://nextjs.org/)
 -   **Deployment**: [Vercel](https://vercel.com)
@@ -10,8 +8,8 @@
 ## Running Locally
 
 ```bash
-$ git clone https://github.com/ephraimduncan/astrosaurus.me.git
-$ cd duncan.land
+$ git clone https://github.com/Trixzyy/zac.ong.git
+$ cd zac.ong
 $ bun install
 $ bun dev
 ```
