@@ -1,7 +1,8 @@
 import { Post, allPosts } from "@/.contentlayer/generated";
-import { ExternalLink } from "@/components/ui/ExternalLink";
 import Link from "next/link";
 import { MotionDiv, MotionHeader } from "@/components/motion";
+import  SocialLinks  from "@/components/ui/ExternalLink";
+import DiscordProfile from "@/components/ui/DiscordProfile";
 
 const containerVariants = {
     hidden: {},
@@ -17,34 +18,31 @@ const childVariants = {
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
+const socialLinks = [
+    { href: 'https://github.com/Trixzyy', name: 'github', icon: '/socials/github.png' },
+    { href: 'https://x.com/trixzydev', name: 'x', icon: '/socials/x.png' },
+    { href: 'https://discord.com/users/992171799536218142', name: 'discord', icon: '/socials/discord.png' },
+  ]
+
 export default function Home() {
     return (
         <MotionDiv initial="hidden" animate="visible" variants={containerVariants}>
             <MotionHeader variants={childVariants}>
-                <div className="flex items-center justify-between mb-4">
-                    <div>
-                        <h1 className="text-2xl">ZEROAUTH</h1>
-                        <h3 className="text-grey-400 text-lg mt-1">
-                        Unlock the World.
-                        </h3>
-                    </div>
-                </div>
+                <DiscordProfile/>
             </MotionHeader>
 
             <MotionDiv variants={childVariants} className=" dark:text-grey-100 text-grey-800 mt-10 space-y-5">
                 <p>
-                    Building polished software experiences with magical, unique and delightful details, for the web. I
-                    aim to create beautiful and functional software that is both intuitive and enjoyable for users.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.
                 </p>
                 <p>
-                    I have a passion for learning, and I am constantly seeking to improve my skills mostly through{" "}
-                    <span className="inline-link">reading</span> and{" "}
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.{" "}
+                    <span className="inline-link">Lorem ipsum</span> dolor sit amet,{" "}
                     <Link href="/blog">
-                        <span className="inline-link">writing</span>
+                        <span className="inline-link">consectetur adipiscing</span>
                     </Link>
-                    . I'm interested in
-                    <em> TypeScript</em> and <em> Rust</em>, and at the same time, I'm also experimenting with native
-                    apps with <em> Swift</em>.
+                    . Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.
+                    <em> Lorem ipsum</em> dolor sit amet, <em> consectetur adipiscing</em> elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.
                 </p>
             </MotionDiv>
             <MotionDiv variants={childVariants}>
@@ -62,12 +60,8 @@ export default function Home() {
                     ></path>
                 </svg>
 
-                <ExternalLink text="follow me on x" href="https://twitter.com/EphraimDuncan_" />
-
-                <ExternalLink text="let's collaborate on github" href="https://github.com/ephraimduncan" />
-
-                <ExternalLink text="love to talk?" href="https://cal.com/astrosaurus/30min" />
-            </MotionDiv>
+                <SocialLinks links={socialLinks} />
+                </MotionDiv>
         </MotionDiv>
     );
 }
