@@ -6,11 +6,11 @@ interface Album {
   name: string
   artist: {
     name: string
-    url: string // Add URL for the artist
+    url: string
   }
   playcount: string
-  image: { '#text': string, size: string }[] // Add size for clarity
-  url: string // Add URL for the album
+  image: { '#text': string, size: string }[]
+  url: string
 }
 
 interface Track {
@@ -23,7 +23,7 @@ interface Track {
     '#text': string
   }
   image: { '#text': string, size: string }[]
-  url: string // Add URL for the track
+  url: string
   date?: {
     '#text': string
     uts: string
@@ -33,6 +33,7 @@ interface Track {
 interface LastFmData {
   topAlbums: Album[]
   recentTracks: Track[]
+  lastUpdated: number
 }
 
 export function useLastFmData(period: Period) {
@@ -40,24 +41,43 @@ export function useLastFmData(period: Period) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
 
-useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
-        try {
-            setLoading(true)
-            const response = await fetch(`/api/lastfm?period=${period}`)
-            if (!response.ok) {
-                throw new Error('Network response was not ok :(')
-            }
-            const data = await response.json()
-            setData(data)
-        } catch (err) {
-            setError(err instanceof Error ? err : new Error('An error occurred'))
-        } finally {
-            setLoading(false)
+      try {
+        setLoading(true)
+        const response = await fetch(`/api/lastfm?period=${period}`)
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
         }
+        const newData: LastFmData = await response.json()
+        
+        if (!newData.topAlbums || !newData.recentTracks) {
+          throw new Error('Invalid data structure received from API')
+        }
+
+        // Update data only if it's newer than the current data
+        setData(prevData => {
+          if (!prevData || newData.lastUpdated > prevData.lastUpdated) {
+            return newData;
+          }
+          return prevData;
+        })
+        setError(null)
+      } catch (err) {
+        console.error('Error fetching Last.fm data:', err)
+        setError(err instanceof Error ? err : new Error('An error occurred'))
+      } finally {
+        setLoading(false)
+      }
     }
 
     fetchData()
+
+    // Set up an interval to fetch data every 5 minutes
+    const intervalId = setInterval(fetchData, 5 * 60 * 1000)
+
+    // Clean up the interval on component unmount
+    return () => clearInterval(intervalId)
   }, [period])
 
   return { data, loading, error }
