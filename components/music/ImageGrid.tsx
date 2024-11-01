@@ -33,7 +33,7 @@ interface ImageGridProps {
 export default function ImageGrid({ albums, isLoading }: ImageGridProps) {
   if (isLoading) {
     return (
-      <div className="w-full aspect-[4/2] bg-gray-800 animate-pulse rounded-xl"></div>
+      <div className="w-full aspect-[1/2] md:aspect-[4/2]  bg-gray-800 animate-pulse rounded-xl"></div>
     );
   }
 
