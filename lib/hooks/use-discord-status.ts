@@ -67,7 +67,7 @@ export const useDiscordStatus = () => {
   const [music, setMusic] = useState<SpotifyData | null>(null);
 
   useEffect(() => {
-    const socket = new WebSocket('wss://api.lazerjay.dev/api/lanyard/socket/');
+    const socket = new WebSocket('wss://api.zac.ong/socket/');
 
     const handleOpen = () => {
       socket.send(JSON.stringify({
