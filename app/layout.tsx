@@ -50,7 +50,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 <Toaster richColors />
 
                 <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-                    <main className="max-w-[712px] mx-auto md:py-10 px-4 min-h-[calc(100vh-50px-100px)] mb-10">
+                    <main className="max-w-[712px] mx-auto md:py-10 px-4 min-h-[calc(100vh-50px)] mb-10">
                         <Navbar />
 
                         {children}

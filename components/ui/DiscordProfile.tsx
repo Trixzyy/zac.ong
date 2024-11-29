@@ -109,7 +109,7 @@ export default function DiscordProfile() {
         <div className="flex items-center space-x-5">
             {renderAvatar()}
             <div>
-                <h1 className="text-2xl font-semibold">Hi I'm Zac</h1>
+                <h1 className="font-medium text-2xl tracking-tight">Hi I'm Zac</h1>
                 {renderStatus()}
             </div>
         </div>

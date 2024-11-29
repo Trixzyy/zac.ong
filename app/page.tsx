@@ -33,11 +33,11 @@ export default function Home() {
 
             <MotionDiv variants={childVariants} className=" dark:text-grey-100 text-grey-800 mt-10 space-y-5">
             <p>
-  Welcome to my corner of the web, where I build clever web applications. My journey into web development started with creating games on Scratch and Discord bots, eventually leading me to Node.js and TypeScript.
-</p>
-<p>
-  Currently, I'm using <em>Bun</em> and <em>Next.js</em> to develop efficient web apps. I love that my projects can connect people and make a positive impact. Check out my <Link href="/blog"><span className="inline-link">blog</span></Link> for insights and updates. Also, explore my top listened to albums-I enjoy coding with <Link href="/music"><span className="inline-link">music</span></Link>!
-</p>
+              Hi, I'm a web developer focused on building modern applications. I started my programming journey with Discord bots, which naturally led me to explore Node.js and TypeScript.
+            </p>
+            <p>
+              These days, I work primarily with <em>Bun</em> and <em>Next.js</em> to create performant web applications. You can read more about my work on my <Link href="/blog"><span className="inline-link">blog</span></Link>, or check out what I'm listening to while coding on my <Link href="/music"><span className="inline-link">music</span></Link> page.
+            </p>
             </MotionDiv>
             <MotionDiv variants={childVariants}>
                 <svg
