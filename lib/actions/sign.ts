@@ -5,13 +5,21 @@ import { auth } from "../auth";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
-export async function sign(formData: FormData) {
+type SignResponse = {
+    success: boolean;
+    error?: string;
+};
+
+export async function sign(formData: FormData): Promise<SignResponse> {
     const { user } = await auth();
     const message = formData.get("message") as string;
     const signature = formData.get("signature") as string;
 
     if (!user) {
-        return;
+        return {
+            success: false,
+            error: "You must be logged in to sign the guestbook",
+        };
     }
 
     // query to check if the user has made a post ever
@@ -21,19 +29,28 @@ export async function sign(formData: FormData) {
     });
 
     if (message.length > 150) {
-        throw new Error("Message cannot exceed 150 characters long");
+        return {
+            success: false,
+            error: "Message cannot exceed 150 characters long",
+        };
     }
 
     // Combined regex for various spam checks
     const spamRegex = /(.)\1{4,}|(.{2,})\2{2,}|[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{5,}|(https?:\/\/[^\s]+)/g;
      
     if (spamRegex.test(message)) {
-        throw new Error("Message contains invalid characters or spam.");
+        return {
+            success: false,
+            error: "Message contains invalid characters or spam.",
+        };
     }
 
     // if post, prevent them from making another post
     if (hasMadePostQuery.rows.length) {
-        throw new Error("You have already signed the guestbook");
+        return {
+            success: false,
+            error: "You have already signed the guestbook",
+        };
     }
     
     await db.execute({
@@ -42,4 +59,5 @@ export async function sign(formData: FormData) {
     });
 
     revalidatePath("/guestbook");
+    return { success: true };
 }

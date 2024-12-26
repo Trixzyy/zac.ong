@@ -30,7 +30,6 @@ export const SignDialog = ({ user }: SignDialogProps) => {
         if (!formData.get("message")) {
             setTextInvalid(true);
             setIsOpen(true);
-
             toast.error("Please enter a message");
             setFormLoading(false);
             return;
@@ -39,12 +38,15 @@ export const SignDialog = ({ user }: SignDialogProps) => {
         formData.append("signature", localSignature);
 
         try {
-            await sign(formData);
-            setIsOpen(false);
-            setFormLoading(false);
-        } catch (err: any) {
-            toast.error(err.message);
-            setIsOpen(false);
+            const response = await sign(formData);
+            if (response.success) {
+                setIsOpen(false);
+            } else {
+                toast.error(response.error);
+            }
+        } catch (err) {
+            toast.error("An unexpected error occurred. Please try again later.");
+        } finally {
             setFormLoading(false);
         }
     };
