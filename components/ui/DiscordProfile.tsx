@@ -53,17 +53,21 @@ export default function DiscordProfile() {
         </div>
     )
 
-    const renderEmoji = (emoji: { name: string; id: string; animated: boolean }) => {
-        const extension = emoji.animated ? 'gif' : 'png'
-        return (
-            <Image
-                src={`https://cdn.discordapp.com/emojis/${emoji.id}.${extension}`}
-                alt={emoji.name}
-                width={16}
-                height={16}
-                className="w-4 h-4 mr-1"
-            />
-        )
+    const renderEmoji = (emoji: { name: string; id?: string; animated?: boolean; type?: 'custom' | 'unicode' }) => {
+        if (!emoji.type || emoji.type === 'custom') {
+            const extension = emoji.animated ? 'gif' : 'png'
+            return (
+                <Image
+                    src={`https://cdn.discordapp.com/emojis/${emoji.id}.${extension}`}
+                    alt={emoji.name}
+                    width={16}
+                    height={16}
+                    className="w-4 h-4 mr-1"
+                />
+            )
+        } else {
+            return <span className="mr-1">{emoji.name}</span>
+        }
     }
 
     const renderStatus = () => {

@@ -46,8 +46,9 @@ interface CustomStatus {
   state?: string;
   emoji?: {
     name: string;
-    id: string;
-    animated: boolean;
+    id?: string;
+    animated?: boolean;
+    type?: 'custom' | 'unicode';
   };
 }
 
@@ -88,7 +89,10 @@ export const useDiscordStatus = () => {
         if (customStatusActivity) {
           setCustomStatus({
             state: customStatusActivity.state,
-            emoji: customStatusActivity.emoji
+            emoji: customStatusActivity.emoji ? {
+              ...customStatusActivity.emoji,
+              type: customStatusActivity.emoji.id ? 'custom' : 'unicode'
+            } : undefined
           });
         } else {
           setCustomStatus(null);
