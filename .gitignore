@@ -38,3 +38,4 @@ features
 .env
 *.db
 local.dbs
+bun.lockb

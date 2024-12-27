@@ -71,7 +71,7 @@ export default function MusicPage() {
   if (error) return <div className="text-center mt-10 text-red-500">Error: {error.message} 😔</div>
 
   return (
-    <MotionDiv initial="hidden" animate="visible" variants={containerVariants} className="max-w-4xl mx-auto px-4">
+    <MotionDiv initial="hidden" animate="visible" variants={containerVariants} className="max-w-4xl mx-auto">
       <MotionDiv variants={childVariants} className="flex justify-between items-center mb-6">
         <h1 className="font-medium text-3xl tracking-tight">Top Albums</h1>
         <CustomSelect

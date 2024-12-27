@@ -70,6 +70,9 @@ export const Post = defineDocumentType(() => ({
             type: "boolean",
             default: false,
         },
+        image: {
+            type: "string",
+        },
     },
     computedFields,
 }));

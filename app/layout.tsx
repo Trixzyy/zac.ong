@@ -8,6 +8,7 @@ import { Analytics } from "@/components/analytics";
 import Script from "next/script";
 import { Navbar } from "@/components/navbar";
 import { Toaster } from "sonner";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const newsreader = Newsreader({
     subsets: ["latin"],
@@ -83,6 +84,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     </footer>
 
                     <Analytics />
+                    <SpeedInsights />
                 </ThemeProvider>
             </body>
             {process.env.NODE_ENV === "production" && (

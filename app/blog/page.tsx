@@ -1,45 +1,64 @@
+'use client';
+
 import { allPosts } from "@/.contentlayer/generated";
 import { MotionDiv } from "@/components/motion";
-import { formatDistance } from "date-fns";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
+import BlogPostItem from "@/components/blog/BlogPostItem";
+import BlogThumbnail from "@/components/blog/BlogThumbnail";
 
 const variant = {
-    hidden: { opacity: 0, y: -5 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 0.5 } },
 };
 
 export default function BlogPage() {
-    return (
-        <MotionDiv initial="hidden" animate="visible" variants={variant} className="space-y-4">
-            <div>
-                <h1 className="text-2xl flex gap-2 items-center my-6 cursor-pointer">Blog</h1>
+    const [hoveredId, setHoveredId] = useState<string | null>(null);
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-                {allPosts
-                    .filter((post) => !post.archived)
-                    .map((post) => (
-                        <article key={post._id} className="mb-8">
-                            <Link href={post.slug} className="flex justify-between items-start">
-                                <h2 className="text-lg hover:underline decoration-grey-100 hover:decoration-1 mb-1">
-                                    {post.title}
-                                </h2>
-                                <span className="text-sm">
-                                    {formatDistance(new Date(post.date), new Date(), {
-                                        addSuffix: true,
-                                    })}
-                                </span>
-                            </Link>
-                            {post.description && <p className="text-sm text-grey-400">{post.description}</p>}
-                        </article>
-                    ))}
+    const handleMouseMove = (e: React.MouseEvent) => {
+        setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    const hoveredPost = hoveredId ? allPosts.find(post => post._id === hoveredId) ?? null : null;
+
+    return (
+        <MotionDiv 
+            initial="hidden" 
+            animate="visible" 
+            variants={variant}
+            onMouseMove={handleMouseMove}
+        >
+            <div className="max-w-2xl">
+                <h1 className="font-medium text-3xl tracking-tight mb-8">Blog</h1>
+
+                <div className="divide-y divide-grey-100/10">
+                    {allPosts
+                        .filter((post) => !post.archived)
+                        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                        .map((post) => (
+                            <BlogPostItem
+                                key={post._id}
+                                post={post}
+                                isHovered={hoveredId === post._id}
+                                onHover={setHoveredId}
+                                hoveredId={hoveredId}
+                            />
+                        ))}
+                </div>
 
                 <Link
                     href="archive"
-                    className="text-sm mt-9 hover:underline decoration-grey-100 hover:decoration-1 cursor-pointer"
+                    className="text-sm mt-12 inline-block decoration-grey-100 "
                 >
-                    Archived Posts
+                    View Archived Posts
                 </Link>
             </div>
+
+            <BlogThumbnail 
+                hoveredPost={hoveredPost}
+                mousePosition={mousePosition}
+            />
         </MotionDiv>
     );
 }
