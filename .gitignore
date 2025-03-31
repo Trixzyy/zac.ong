@@ -36,6 +36,11 @@ next-env.d.ts
 .contentlayer
 features
 .env
+
+# database
 *.db
-local.dbs
+local.db
+backups/
+
+# build files
 bun.lockb

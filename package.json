@@ -7,11 +7,13 @@
         "build": "next build",
         "preview": "next build && next start",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "next lint",
+        "migrate-to-remote": "npx tsx lib/migrate-to-remote.ts"
     },
     "dependencies": {
         "@headlessui/react": "^2.0.4",
         "@libsql/client": "^0.6.2",
+        "@libsql/darwin-arm64": "^0.5.3",
         "@lucia-auth/adapter-sqlite": "^3.0.1",
         "@radix-ui/react-slot": "^1.0.2",
         "@tailwindcss/typography": "^0.5.9",
@@ -29,6 +31,7 @@
         "clsx": "^2.1.1",
         "contentlayer": "^0.3.2",
         "date-fns": "^2.30.0",
+        "dotenv": "^16.4.7",
         "eslint": "8.39.0",
         "eslint-config-next": "latest",
         "framer-motion": "^10.16.4",
@@ -51,5 +54,8 @@
         "tailwind-merge": "^2.3.0",
         "tailwindcss": "3.3.2",
         "typescript": "5.0.4"
+    },
+    "devDependencies": {
+        "tsx": "^4.19.3"
     }
 }
