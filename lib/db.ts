@@ -2,26 +2,33 @@ import { createClient } from "@libsql/client";
 
 // Log database connection details at startup
 const logDbConnection = (url: string) => {
-  console.log(`[Database] Connected to LibSQL database at ${url}`);
+  console.log(`[Database] Connected to Turso database at ${url}`);
 };
 
 // Get environment variables
-const dbUrl = process.env.REMOTE_LIBSQL_URL;
-const dbToken = process.env.REMOTE_LIBSQL_AUTH_TOKEN;
+const dbUrl = process.env.TURSO_DATABASE_URL;
+const dbToken = process.env.TURSO_AUTH_TOKEN;
 
 // Validate configuration
 if (!dbUrl) {
-  throw new Error("REMOTE_LIBSQL_URL environment variable is required");
+  throw new Error("TURSO_DATABASE_URL environment variable is required");
+}
+// Keep token check for security
+if (!dbToken) {
+  console.warn("[Database] TURSO_AUTH_TOKEN is missing. Database operations might fail.");
 }
 
 // Log connection
 logDbConnection(dbUrl);
 
-// Create database client
+// Create database client - Note: This client might still have migration issues
+// The fallback mechanism in guestbook/page.tsx is currently handling queries.
 export const db = createClient({
   url: dbUrl,
   authToken: dbToken,
   fetch: globalThis.fetch, // Explicitly use global fetch for better compatibility
+  syncUrl: undefined, // Ensure sync is disabled
+  syncInterval: 0, // Ensure sync is disabled
 });
 
 // Original Turso client configuration (commented out)
