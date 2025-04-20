@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@headlessui/react": "^2.0.4",
-        "@libsql/client": "^0.6.2",
+        "@libsql/client": "^0.15.4",
         "@libsql/darwin-arm64": "^0.5.3",
         "@lucia-auth/adapter-sqlite": "^3.0.1",
         "@radix-ui/react-slot": "^1.0.2",

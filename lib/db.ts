@@ -21,8 +21,7 @@ if (!dbToken) {
 // Log connection
 logDbConnection(dbUrl);
 
-// Create database client - Note: This client might still have migration issues
-// The fallback mechanism in guestbook/page.tsx is currently handling queries.
+// Create database client
 export const db = createClient({
   url: dbUrl,
   authToken: dbToken,

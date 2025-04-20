@@ -7,10 +7,11 @@ import { generateId } from "lucia";
 import type { DatabaseUser } from "@/lib/db";
 
 interface GitHubUser {
-    id: string;
+    id: number;
+    login: string;
+    name: string;
     email: string;
     avatar_url: string;
-    name: string;
 }
 
 type EmailInfo = {
@@ -60,7 +61,7 @@ export async function GET(request: Request): Promise<Response> {
         }
 
         const existingUserResult = await db.execute({
-            sql: "SELECT * FROM user WHERE github_id = ?",
+            sql: "SELECT id, username, github_id, name, email FROM user WHERE github_id = ? LIMIT 1",
             args: [githubUser.id],
         });
 
@@ -79,9 +80,9 @@ export async function GET(request: Request): Promise<Response> {
         }
 
         const userId = generateId(15);
-        db.execute({
+        await db.execute({
             sql: "INSERT INTO user (id, github_id, username, name, email) VALUES (?, ?, ?, ?, ?)",
-            args: [userId, githubUser.id, githubUser.login, githubUser.name, primaryEmail.email],
+            args: [userId, githubUser.id, githubUser.login, githubUser.name ?? githubUser.login, primaryEmail.email],
         });
 
         const session = await lucia.createSession(userId, {});
@@ -106,9 +107,4 @@ export async function GET(request: Request): Promise<Response> {
             status: 500,
         });
     }
-}
-
-interface GitHubUser {
-    id: string;
-    login: string;
 }
