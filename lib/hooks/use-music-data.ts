@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 type Period = '7day' | '1month' | '3month' | '6month' | '12month' | 'overall'
 
@@ -28,6 +28,9 @@ interface Track {
     '#text': string
     uts: string
   }
+  '@attr'?: {
+    nowplaying: string
+  }
 }
 
 interface LastFmData {
@@ -40,6 +43,7 @@ export function useLastFmData(period: Period) {
   const [data, setData] = useState<LastFmData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
+  const currentPeriodRef = useRef<Period>(period)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,13 +59,22 @@ export function useLastFmData(period: Period) {
           throw new Error('Invalid data structure received from API')
         }
 
-        // Update data only if it's newer than the current data
+        // Always update data when period changes, or when data is newer
         setData(prevData => {
-          if (!prevData || newData.lastUpdated > prevData.lastUpdated) {
-            return newData;
+          // If period changed, always update (different datasets)
+          if (currentPeriodRef.current !== period) {
+            currentPeriodRef.current = period
+            return newData
           }
-          return prevData;
+          
+          // If same period, only update if data is newer
+          if (!prevData || newData.lastUpdated > prevData.lastUpdated) {
+            return newData
+          }
+          
+          return prevData
         })
+        
         setError(null)
       } catch (err) {
         console.error('Error fetching Last.fm data:', err)
@@ -73,8 +86,8 @@ export function useLastFmData(period: Period) {
 
     fetchData()
 
-    // Set up an interval to fetch data every 5 minutes
-    const intervalId = setInterval(fetchData, 5 * 60 * 1000)
+    // Set up an interval to fetch data every 30 seconds for near real-time updates
+    const intervalId = setInterval(fetchData, 30 * 1000)
 
     // Clean up the interval on component unmount
     return () => clearInterval(intervalId)

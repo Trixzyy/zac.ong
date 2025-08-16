@@ -44,3 +44,6 @@ backups/
 
 # build files
 bun.lockb
+
+# cache files
+.cache/
