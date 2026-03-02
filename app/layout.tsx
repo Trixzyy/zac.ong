@@ -7,6 +7,7 @@ import localFont from "next/font/local";
 import { Analytics } from "@/components/analytics";
 import Script from "next/script";
 import { Navbar } from "@/components/navbar";
+import { FooterSignature } from "@/components/FooterSignature";
 import { Toaster } from "sonner";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 
@@ -51,14 +52,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 <Toaster richColors />
 
                 <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-                    <main className="max-w-[712px] mx-auto md:py-10 px-4 min-h-[calc(100vh-50px)] mb-10">
+                    <main className="max-w-[712px] mx-auto md:py-10 px-4 min-h-[calc(100vh-50px)] mb-10 pb-20">
                         <Navbar />
 
                         {children}
                     </main>
 
-                    <footer className="fixed bottom-0 w-full bg-white dark:bg-grey-950 z-1000 py-2 border-t border-solid border-grey-100 dark:border-grey-700">
-                        <div className="mx-auto max-w-[712px] px-4 md:px-0 flex justify-between">
+                    <footer className="fixed bottom-0 w-full bg-white dark:bg-grey-950 z-[1000] py-2 border-t border-solid border-grey-100 dark:border-grey-700">
+                        <div className="mx-auto max-w-[712px] px-4 md:px-0 flex justify-between items-center gap-4">
                             <a href="https://github.com/Trixzyy/zac.ong" target="_blank" rel="noopener noreferrer" className="text-grey-500 dark:text-grey-400 hover:text-grey-700 dark:hover:text-grey-200 transition-colors duration-300">
                             <svg
                                     width="30"
@@ -75,11 +76,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                             />
                             </svg>
                             </a>
-                            <div className="flex flex-col md:flex-row justify-between items-center">
-                                <p className="text-center md:text-left mb-4 md:mb-0">
-                                    zac.ong © {new Date().getFullYear()} All rights reserved.
-                                </p>
-                            </div>
+                            <FooterSignature />
                         </div>
                     </footer>
 

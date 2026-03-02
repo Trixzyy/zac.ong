@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AlbumCard from './AlbumCard';
+import type { TopAlbum } from '@/lib/music-types';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -26,7 +27,7 @@ const itemVariants = {
 };
 
 interface ImageGridProps {
-  albums: any[];
+  albums: TopAlbum[];
   isLoading: boolean;
 }
 
@@ -52,7 +53,7 @@ export default function ImageGrid({ albums, isLoading }: ImageGridProps) {
     <div className="relative w-full">
       <div className="aspect-[1/2] md:aspect-[2/1]">
         <AnimatePresence mode="wait">
-          {isLoading ? (
+          {isLoading || albums.length === 0 ? (
             <motion.div
               key="loading"
               className="absolute inset-0"

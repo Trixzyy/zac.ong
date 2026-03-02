@@ -1,7 +1,7 @@
 import { Post, allPosts } from "@/.contentlayer/generated";
 import Link from "next/link";
 import { MotionDiv, MotionHeader } from "@/components/motion";
-import  SocialLinks  from "@/components/ui/ExternalLink";
+import SocialLinks from "@/components/ui/ExternalLink";
 import DiscordProfile from "@/components/ui/DiscordProfile";
 
 const containerVariants = {
@@ -22,22 +22,35 @@ const socialLinks = [
     { href: 'https://github.com/Trixzyy', name: 'github', icon: '/socials/github.png' },
     { href: 'https://x.com/trixzydev', name: 'x', icon: '/socials/x.png' },
     { href: 'https://discord.com/users/992171799536218142', name: 'discord', icon: '/socials/discord.png' },
-  ]
+]
 
 export default function Home() {
     return (
         <MotionDiv initial="hidden" animate="visible" variants={containerVariants}>
             <MotionHeader variants={childVariants}>
-                <DiscordProfile/>
+                <DiscordProfile />
             </MotionHeader>
 
             <MotionDiv variants={childVariants} className=" dark:text-grey-100 text-grey-800 mt-10 space-y-5">
-            <p>
-              Hi, I'm a web developer focused on building modern applications. I started my programming journey with Discord bots, which naturally led me to explore Node.js and TypeScript.
-            </p>
-            <p>
-              These days, I work primarily with <em>Bun</em> and <em>Next.js</em> to create performant web applications. You can read more about my work on my <Link href="/blog"><span className="inline-link">blog</span></Link>, or check out what I'm listening to while coding on my <Link href="/music"><span className="inline-link">music</span></Link> page.
-            </p>
+                <p>
+                    I’m a Computer Science student building scalable web systems.
+                </p>
+
+                <p>
+                    I design APIs and data-driven applications. I’m interested in how software behaves in production, thinking about how it scales, fails, and recovers.
+                </p>
+
+                <p>
+                    You can read more about my work on my{" "}
+                    <Link href="/blog">
+                        <span className="inline-link">blog</span>
+                    </Link>
+                    , or see what’s usually playing while I build on my{" "}
+                    <Link href="/music">
+                        <span className="inline-link">music</span>
+                    </Link>{" "}
+                    page.
+                </p>
             </MotionDiv>
             <MotionDiv variants={childVariants}>
                 <svg
@@ -55,7 +68,7 @@ export default function Home() {
                 </svg>
 
                 <SocialLinks links={socialLinks} />
-                </MotionDiv>
+            </MotionDiv>
         </MotionDiv>
     );
 }
