@@ -6,6 +6,14 @@ html {
   scrollbar-gutter: stable;
 }
 
+html.dark {
+  color-scheme: dark;
+}
+
+html.light {
+  color-scheme: light;
+}
+
 body {
   overflow-y: scroll;
 }

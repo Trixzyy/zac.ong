@@ -1,8 +1,8 @@
-import { defineDocumentType, makeSource } from "contentlayer/source-files";
+import { defineDocumentType, makeSource } from "contentlayer2/source-files";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 
-/** @type {import('contentlayer/source-files').ComputedFields} */
+/** @type {import('contentlayer2/source-files').ComputedFields} */
 const computedFields = {
     slug: {
         type: "string",
@@ -66,7 +66,7 @@ export const Post = defineDocumentType(() => ({
         draft: {
             type: "boolean",
         },
-        archived: { // Added archived field to mark posts as archived
+        archived: {
             type: "boolean",
             default: false,
         },

@@ -1,14 +1,14 @@
 import { notFound } from "next/navigation";
-import { allThoughts } from "contentlayer/generated";
+import { allThoughts } from "contentlayer2/generated";
 
 import { Metadata } from "next";
 import { Mdx } from "@/components/mdx-components";
 import { MotionDiv } from "@/components/motion";
 
 interface ThoughtsProps {
-    params: {
+    params: Promise<{
         slug: string[];
-    };
+    }>;
 }
 
 const variant = {
@@ -16,7 +16,7 @@ const variant = {
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
-async function getThoughtsFromParams(params: ThoughtsProps["params"]) {
+async function getThoughtsFromParams(params: Awaited<ThoughtsProps["params"]>) {
     const slug = params?.slug?.join("/");
     const thought = allThoughts.find((thought) => thought.slugAsParams === slug);
 
@@ -28,7 +28,7 @@ async function getThoughtsFromParams(params: ThoughtsProps["params"]) {
 }
 
 export async function generateMetadata({ params }: ThoughtsProps): Promise<Metadata> {
-    const thought = await getThoughtsFromParams(params);
+    const thought = await getThoughtsFromParams(await params);
 
     if (!thought) {
         return {};
@@ -39,14 +39,14 @@ export async function generateMetadata({ params }: ThoughtsProps): Promise<Metad
     };
 }
 
-export async function generateStaticParams(): Promise<ThoughtsProps["params"][]> {
+export async function generateStaticParams(): Promise<Awaited<ThoughtsProps["params"]>[]> {
     return allThoughts.map((thought) => ({
         slug: thought.slugAsParams.split("/"),
     }));
 }
 
 export default async function ThoughtPage({ params }: ThoughtsProps) {
-    const thought = await getThoughtsFromParams(params);
+    const thought = await getThoughtsFromParams(await params);
 
     if (!thought) {
         notFound();

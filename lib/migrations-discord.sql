@@ -1,0 +1,17 @@
+-- Discord OAuth schema changes for existing production databases.
+--
+-- Do not run this file directly. SQLite ALTER TABLE is not idempotent and
+-- older versions of this file incorrectly created discord_id as INTEGER.
+--
+-- Use the migration runner instead:
+--   bun run migrate
+--
+-- What it applies safely:
+--   1. provider TEXT NOT NULL DEFAULT 'github' on user (if missing)
+--   2. discord_id TEXT on user (if missing)
+--   3. Converts legacy INTEGER discord_id to TEXT when present
+--   4. CREATE UNIQUE INDEX user_discord_id_idx ON user(discord_id)
+--      WHERE discord_id IS NOT NULL
+--
+-- Existing GitHub users keep their rows. github_id may remain NOT NULL on
+-- legacy production databases; Discord-only users use a placeholder github_id.

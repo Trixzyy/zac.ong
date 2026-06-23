@@ -1,15 +1,18 @@
-const { withContentlayer } = require("next-contentlayer");
+const { withContentlayer } = require("next-contentlayer2");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
-    swcMinify: true,
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
     images: {
-        remotePatterns: [ {
-            protocol: 'https',
-            hostname: 'cdn.discordapp.com',
-            pathname: '**',
-        }
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "cdn.discordapp.com",
+                pathname: "**",
+            },
         ],
     },
 };

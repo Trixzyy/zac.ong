@@ -1,34 +1,35 @@
-import { github, lucia } from "@/lib/auth";
+import { discord, lucia } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { cookies } from "next/headers";
 import { OAuth2RequestError } from "arctic";
 import { generateId } from "lucia";
 
-import type { DatabaseUser } from "@/lib/db";
-
-interface GitHubUser {
-    id: number;
-    login: string;
-    name: string;
+interface DiscordUser {
+    id: string;
+    username: string;
+    global_name: string | null;
     email: string;
-    avatar_url: string;
 }
 
-type EmailInfo = {
-    email: string;
-    primary: boolean;
-    verified: boolean;
-    visibility: "private" | null;
-};
-
-type EmailList = EmailInfo[];
+/** Placeholder github_id for Discord-only users (github_id remains NOT NULL in legacy schema). */
+function githubPlaceholderForDiscord(discordId: string): number {
+    let hash = 5381;
+    for (let i = 0; i < discordId.length; i++) {
+        hash = (hash * 33) ^ discordId.charCodeAt(i);
+    }
+    const value = hash | 0;
+    if (value === 0) return -1;
+    return value > 0 ? -value : value;
+}
 
 export async function GET(request: Request): Promise<Response> {
     const url = new URL(request.url);
     const code = url.searchParams.get("code");
     const state = url.searchParams.get("state");
     const cookieStore = await cookies();
-    const storedState = cookieStore.get("github_oauth_state")?.value ?? null;
+    const storedState = cookieStore.get("discord_oauth_state")?.value ?? null;
+    cookieStore.delete("discord_oauth_state");
+
     if (!code || !state || !storedState || state !== storedState) {
         return new Response(null, {
             status: 400,
@@ -36,40 +37,34 @@ export async function GET(request: Request): Promise<Response> {
     }
 
     try {
-        const tokens = await github.validateAuthorizationCode(code);
-        const githubUserResponse = await fetch("https://api.github.com/user", {
+        const tokens = await discord.validateAuthorizationCode(code);
+        const discordUserResponse = await fetch("https://discord.com/api/users/@me", {
             headers: {
                 Authorization: `Bearer ${tokens.accessToken}`,
             },
         });
-        const githubUser: GitHubUser = await githubUserResponse.json();
-        const emailResponse = await fetch("https://api.github.com/user/emails", {
-            headers: {
-                Authorization: `Bearer ${tokens.accessToken}`,
-            },
-        });
+        const discordUser: DiscordUser = await discordUserResponse.json();
 
-        const githubUserEmails = (await emailResponse.json()) as EmailList;
-        const primaryEmail = githubUserEmails.find((email: { primary: boolean }) => email.primary);
-
-        if (!primaryEmail?.email || !primaryEmail.verified) {
+        if (!discordUser.email) {
             return new Response(
                 JSON.stringify({
-                    error: "Your github account must have a primary email address.",
+                    error: "Your Discord account must have a verified email address.",
                 }),
                 { status: 400, headers: { Location: "/login" } }
             );
         }
 
+        const discordId = discordUser.id;
+
         const existingUserResult = await db.execute({
-            sql: "SELECT id, username, github_id, name, email FROM user WHERE github_id = ? LIMIT 1",
-            args: [githubUser.id],
+            sql: "SELECT id FROM user WHERE discord_id = ? LIMIT 1",
+            args: [discordId],
         });
 
-        const existingUser = existingUserResult.rows[0] as unknown as DatabaseUser | undefined;
+        const existingUserId = existingUserResult.rows[0]?.id as string | undefined;
 
-        if (existingUser) {
-            const session = await lucia.createSession(existingUser.id, {});
+        if (existingUserId) {
+            const session = await lucia.createSession(existingUserId, {});
             const sessionCookie = lucia.createSessionCookie(session.id);
             cookieStore.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
             return new Response(null, {
@@ -81,9 +76,19 @@ export async function GET(request: Request): Promise<Response> {
         }
 
         const userId = generateId(15);
+        const displayName = discordUser.global_name ?? discordUser.username;
+
         await db.execute({
-            sql: "INSERT INTO user (id, github_id, username, name, email) VALUES (?, ?, ?, ?, ?)",
-            args: [userId, githubUser.id, githubUser.login, githubUser.name ?? githubUser.login, primaryEmail.email],
+            sql: "INSERT INTO user (id, github_id, discord_id, username, name, email, provider) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            args: [
+                userId,
+                githubPlaceholderForDiscord(discordId),
+                discordId,
+                discordUser.username,
+                displayName,
+                discordUser.email,
+                "discord",
+            ],
         });
 
         const session = await lucia.createSession(userId, {});
@@ -96,7 +101,7 @@ export async function GET(request: Request): Promise<Response> {
             },
         });
     } catch (e) {
-        if (e instanceof OAuth2RequestError && e.message === "bad_verification_code") {
+        if (e instanceof OAuth2RequestError) {
             return new Response(null, {
                 status: 400,
             });

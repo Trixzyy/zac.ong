@@ -39,7 +39,9 @@ export const db = createClient({
 export interface DatabaseUser {
     id: string;
     username: string;
-    github_id: number;
+    github_id: number | null;
+    discord_id: string | null;
+    provider: string;
     name?: string;
     email: string;
 }

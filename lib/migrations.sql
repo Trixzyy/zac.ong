@@ -1,13 +1,18 @@
--- Create user table
+-- Base schema for zac.ong guestbook (Lucia + Arctic auth)
+-- Safe to re-run: uses CREATE TABLE/INDEX IF NOT EXISTS
+-- For existing production databases created before Discord auth,
+-- run: bun run migrate
+
 CREATE TABLE IF NOT EXISTS user (
     id TEXT NOT NULL PRIMARY KEY,
-    github_id INTEGER NOT NULL UNIQUE,
+    github_id INTEGER UNIQUE,
+    discord_id TEXT,
     username TEXT NOT NULL,
     name TEXT,
-    email TEXT NOT NULL UNIQUE
+    email TEXT NOT NULL UNIQUE,
+    provider TEXT NOT NULL DEFAULT 'github'
 );
 
--- Create session table
 CREATE TABLE IF NOT EXISTS session (
     id TEXT NOT NULL PRIMARY KEY,
     expires_at INTEGER NOT NULL,
@@ -15,7 +20,6 @@ CREATE TABLE IF NOT EXISTS session (
     FOREIGN KEY (user_id) REFERENCES user(id)
 );
 
--- Create post table
 CREATE TABLE IF NOT EXISTS post (
     id TEXT NOT NULL PRIMARY KEY,
     created_at INTEGER NOT NULL,

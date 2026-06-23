@@ -1,15 +1,15 @@
 import { generateState } from "arctic";
-import { github } from "../../../lib/auth";
+import { discord } from "../../../lib/auth";
 import { cookies } from "next/headers";
 
 export async function GET(): Promise<Response> {
     const state = generateState();
-    const url = await github.createAuthorizationURL(state, {
-        scopes: ["read:user", "user:email"],
+    const url = await discord.createAuthorizationURL(state, {
+        scopes: ["identify", "email"],
     });
 
     const cookieStore = await cookies();
-    cookieStore.set("github_oauth_state", state, {
+    cookieStore.set("discord_oauth_state", state, {
         path: "/",
         secure: process.env.NODE_ENV === "production",
         httpOnly: true,

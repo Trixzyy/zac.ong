@@ -47,3 +47,4 @@ bun.lockb
 
 # cache files
 .cache/
+.env.local.example
