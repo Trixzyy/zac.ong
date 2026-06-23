@@ -2,7 +2,7 @@ import { Lucia } from "lucia";
 import { LibSQLAdapter } from "@lucia-auth/adapter-sqlite";
 import { cookies } from "next/headers";
 import { cache } from "react";
-import { GitHub } from "arctic";
+import { Discord, GitHub } from "arctic";
 
 import type { Session, User } from "lucia";
 import { DatabaseUser, db } from "./db";
@@ -21,8 +21,10 @@ export const lucia = new Lucia(adapter, {
     getUserAttributes: (attributes) => {
         return {
             githubId: attributes.github_id,
+            discordId: attributes.discord_id,
             username: attributes.username,
             name: attributes.name,
+            provider: attributes.provider,
         };
     },
 });
@@ -58,3 +60,15 @@ export const auth = cache(async (): Promise<{ user: User; session: Session } | {
 });
 
 export const github = new GitHub(process.env.GITHUB_CLIENT_ID!, process.env.GITHUB_CLIENT_SECRET!);
+
+const discordRedirectUri =
+    process.env.DISCORD_REDIRECT_URI ??
+    (process.env.NODE_ENV === "production"
+        ? "https://zac.ong/login/discord/callback"
+        : "http://localhost:3000/login/discord/callback");
+
+export const discord = new Discord(
+    process.env.DISCORD_CLIENT_ID!,
+    process.env.DISCORD_CLIENT_SECRET!,
+    discordRedirectUri
+);

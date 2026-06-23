@@ -2,6 +2,9 @@ import { Suspense } from "react";
 import Loading from "./loading";
 import LoadMore from "./loadmore";
 import AnimatedPosts from "./components/animated-posts";
+import { GuestbookForm } from "./components/guestbook-form";
+import { SignInButtons } from "./components/sign-in-buttons";
+import { auth } from "@/lib/auth";
 
 const PAGE_SIZE = 20;
 
@@ -122,14 +125,18 @@ const loadMorePosts = async (offset: number = 0) => {
 
 // Guestbook page component
 export default async function GuestbookPage() {
-    // Fetch initial posts using the direct API method
+    const { user } = await auth();
     const initialPosts = await getPostsDirect(0);
 
     return (
-        <Suspense fallback={<Loading />}>
-            <LoadMore loadMoreAction={loadMorePosts} initialOffset={PAGE_SIZE}>
-                <AnimatedPosts posts={initialPosts} />
-            </LoadMore>
-        </Suspense>
+        <>
+            {user ? <GuestbookForm user={user} /> : <SignInButtons />}
+
+            <Suspense fallback={<Loading />}>
+                <LoadMore loadMoreAction={loadMorePosts} initialOffset={PAGE_SIZE}>
+                    <AnimatedPosts posts={initialPosts} />
+                </LoadMore>
+            </Suspense>
+        </>
     );
 }

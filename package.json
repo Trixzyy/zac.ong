@@ -8,7 +8,8 @@
         "preview": "next build && next start",
         "start": "next start",
         "lint": "next lint",
-        "migrate-to-remote": "npx tsx lib/migrate-to-remote.ts"
+        "migrate-to-remote": "npx tsx lib/migrate-to-remote.ts",
+        "migrate-discord": "npx tsx lib/run-discord-migration.ts"
     },
     "dependencies": {
         "@headlessui/react": "^2.0.4",

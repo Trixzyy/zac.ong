@@ -1,10 +1,12 @@
 -- Create user table
 CREATE TABLE IF NOT EXISTS user (
     id TEXT NOT NULL PRIMARY KEY,
-    github_id INTEGER NOT NULL UNIQUE,
+    github_id INTEGER UNIQUE,
+    discord_id TEXT UNIQUE,
     username TEXT NOT NULL,
     name TEXT,
-    email TEXT NOT NULL UNIQUE
+    email TEXT NOT NULL UNIQUE,
+    provider TEXT NOT NULL DEFAULT 'github'
 );
 
 -- Create session table
