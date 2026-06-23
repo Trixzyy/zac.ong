@@ -9,7 +9,8 @@ export async function GET(): Promise<Response> {
     }
 
     const sessionCookie = lucia.createBlankSessionCookie();
-    cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+    const cookieStore = await cookies();
+    cookieStore.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
 
     return new Response(null, {
         status: 302,

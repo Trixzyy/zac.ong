@@ -9,8 +9,6 @@ import { sign } from "@/lib/actions/sign";
 import { User } from "lucia";
 import { FormEvent, useState } from "react";
 import { toast } from "sonner";
-import { useFormStatus } from "react-dom";
-import { set } from "date-fns";
 
 type SignDialogProps = {
     user: User;
