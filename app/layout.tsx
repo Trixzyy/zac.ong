@@ -51,7 +51,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <body className="antialiased bg-grey-50 dark:bg-grey-950 text-grey-800 dark:text-grey-100">
                 <Toaster richColors />
 
-                <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+                <ThemeProvider attribute="class" defaultTheme="dark" enableSystem enableColorScheme={false}>
                     <main className="max-w-[712px] mx-auto md:py-10 px-4 min-h-[calc(100vh-50px)] mb-10 pb-20">
                         <Navbar />
 

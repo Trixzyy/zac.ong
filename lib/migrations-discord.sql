@@ -1,14 +1,17 @@
--- Discord OAuth schema migration (run via: npm run migrate-discord)
--- discord_id must be TEXT — Discord snowflakes exceed JS Number.MAX_SAFE_INTEGER.
-
-ALTER TABLE user ADD COLUMN discord_id INTEGER;
-ALTER TABLE user ADD COLUMN provider TEXT NOT NULL DEFAULT 'github';
-CREATE UNIQUE INDEX IF NOT EXISTS user_discord_id_idx ON user(discord_id) WHERE discord_id IS NOT NULL;
-
--- Convert discord_id from INTEGER to TEXT (safe to re-run: skips if already TEXT)
-ALTER TABLE user ADD COLUMN discord_id_text TEXT;
-UPDATE user SET discord_id_text = CAST(discord_id AS TEXT) WHERE discord_id IS NOT NULL;
-DROP INDEX IF EXISTS user_discord_id_idx;
-ALTER TABLE user DROP COLUMN discord_id;
-ALTER TABLE user RENAME COLUMN discord_id_text TO discord_id;
-CREATE UNIQUE INDEX IF NOT EXISTS user_discord_id_idx ON user(discord_id) WHERE discord_id IS NOT NULL;
+-- Discord OAuth schema changes for existing production databases.
+--
+-- Do not run this file directly. SQLite ALTER TABLE is not idempotent and
+-- older versions of this file incorrectly created discord_id as INTEGER.
+--
+-- Use the migration runner instead:
+--   bun run migrate
+--
+-- What it applies safely:
+--   1. provider TEXT NOT NULL DEFAULT 'github' on user (if missing)
+--   2. discord_id TEXT on user (if missing)
+--   3. Converts legacy INTEGER discord_id to TEXT when present
+--   4. CREATE UNIQUE INDEX user_discord_id_idx ON user(discord_id)
+--      WHERE discord_id IS NOT NULL
+--
+-- Existing GitHub users keep their rows. github_id may remain NOT NULL on
+-- legacy production databases; Discord-only users use a placeholder github_id.

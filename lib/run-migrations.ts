@@ -1,5 +1,5 @@
 import * as dotenv from "dotenv";
-import { applyDiscordSchema, createMigrationClient, printSchemaSummary, verifySchema } from "./migrate";
+import { createMigrationClient, printSchemaSummary, runMigrations } from "./migrate";
 
 dotenv.config({ path: ".env.local" });
 dotenv.config({ path: ".env" });
@@ -13,12 +13,11 @@ async function main() {
 
     const db = createMigrationClient();
 
-    console.log(`Running Discord schema migration against ${dbUrl}...`);
+    console.log(`Running migrations against ${dbUrl}...`);
 
-    await applyDiscordSchema(db);
-    await verifySchema(db);
+    await runMigrations(db);
 
-    console.log("✅ Discord migration completed successfully.");
+    console.log("✅ Migrations completed successfully.");
     await printSchemaSummary(db);
 }
 
